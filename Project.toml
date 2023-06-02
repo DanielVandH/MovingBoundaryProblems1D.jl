@@ -1,0 +1,13 @@
+name = "MovingBoundaryProblem1D"
+uuid = "a903a81a-d576-4eaa-89dc-ab2b94f0d51c"
+authors = ["DanielVandH <danj.vandenheuvel@gmail.com> and contributors"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
