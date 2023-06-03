@@ -52,6 +52,6 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using MovingBoundaryProblem1D
-            DocMeta.setdocmeta!(MovingBoundaryProblem1D, :DocTestSetup, :(using MovingBoundaryProblem1D); recursive=true)
-            doctest(MovingBoundaryProblem1D)'
+            using MovingBoundaryProblems1D
+            DocMeta.setdocmeta!(MovingBoundaryProblems1D, :DocTestSetup, :(using MovingBoundaryProblems1D); recursive=true)
+            doctest(MovingBoundaryProblems1D)'

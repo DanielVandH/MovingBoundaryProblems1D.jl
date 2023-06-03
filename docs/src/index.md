@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = MovingBoundaryProblem1D
+CurrentModule = MovingBoundaryProblems1D
 ```
 
-# MovingBoundaryProblem1D
+# MovingBoundaryProblems1D
 
-Documentation for [MovingBoundaryProblem1D](https://github.com/DanielVandH/MovingBoundaryProblem1D.jl).
+Documentation for [MovingBoundaryProblems1D](https://github.com/DanielVandH/MovingBoundaryProblems1D.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [MovingBoundaryProblem1D]
+Modules = [MovingBoundaryProblems1D]
 ```

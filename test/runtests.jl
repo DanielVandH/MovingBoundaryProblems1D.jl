@@ -1,6 +1,7 @@
-using MovingBoundaryProblem1D
+using MovingBoundaryProblems1D
 using Test
+using SafeTestsets
 
-@testset "MovingBoundaryProblem1D.jl" begin
+@testset "MovingBoundaryProblems1D.jl" begin
     # Write your tests here.
 end

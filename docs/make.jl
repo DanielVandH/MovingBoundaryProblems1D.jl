@@ -1,16 +1,16 @@
-using MovingBoundaryProblem1D
+using MovingBoundaryProblems1D
 using Documenter
 
-DocMeta.setdocmeta!(MovingBoundaryProblem1D, :DocTestSetup, :(using MovingBoundaryProblem1D); recursive=true)
+DocMeta.setdocmeta!(MovingBoundaryProblems1D, :DocTestSetup, :(using MovingBoundaryProblems1D); recursive=true)
 
 makedocs(;
-    modules=[MovingBoundaryProblem1D],
+    modules=[MovingBoundaryProblems1D],
     authors="DanielVandH <danj.vandenheuvel@gmail.com> and contributors",
-    repo="https://github.com/DanielVandH/MovingBoundaryProblem1D.jl/blob/{commit}{path}#{line}",
-    sitename="MovingBoundaryProblem1D.jl",
+    repo="https://github.com/DanielVandH/MovingBoundaryProblems1D.jl/blob/{commit}{path}#{line}",
+    sitename="MovingBoundaryProblems1D.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://DanielVandH.github.io/MovingBoundaryProblem1D.jl",
+        canonical="https://DanielVandH.github.io/MovingBoundaryProblems1D.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -20,6 +20,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/DanielVandH/MovingBoundaryProblem1D.jl",
+    repo="github.com/DanielVandH/MovingBoundaryProblems1D.jl",
     devbranch="main",
 )
