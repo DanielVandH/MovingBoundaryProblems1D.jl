@@ -1,4 +1,4 @@
-function SciMLBase.ODEProblem(prob::FVMProblem;
+function SciMLBase.ODEProblem(prob::MBProblem;
     specialization::Type{S}=SciMLBase.AutoSpecialize,
     jac_prototype=jacobian_sparsity(prob),
     kwargs...) where {S}
@@ -12,7 +12,7 @@ function SciMLBase.ODEProblem(prob::FVMProblem;
     lhs_cb = lhs_dirichlet(prob, :saveat ∈ keys(kwarg_dict))
     rhs_cb = rhs_dirichlet(prob, :saveat ∈ keys(kwarg_dict))
     cb = CallbackSet(lhs_cb, rhs_cb)
-    f = ODEFunction{true,S}(pde_odes!; jac_prototype=jac_prototype)
+    f = ODEFunction{true,S}(mb_odes!; jac_prototype=jac_prototype)
     ode_problem = ODEProblem{true,S}(f, initial_condition, time_span, prob; callback=cb, kwargs...)
     return ode_problem
 end

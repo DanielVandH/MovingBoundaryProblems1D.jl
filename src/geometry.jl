@@ -40,6 +40,7 @@ function MBGeometry(mesh_points)
         a = mesh_points[begin]
         b = mesh_points[end]
         mesh_points = (mesh_points .- a) ./ (b - a)
+        @warn "The provided mesh_points were not scaled to [0, 1]. They have been scaled."
     end
     spacings = compute_spacings(mesh_points)
     volumes = compute_volumes(mesh_points, spacings)

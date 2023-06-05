@@ -109,65 +109,40 @@ function mb_odes!(duLdt, uL, prob::P, t) where {P}
     return nothing
 end
 
-# similar to a FVMProblem, but we also add dependency on the last boundary point and on L since each equation has dLdt and L
+#=
+Similar to a FVMProblem, but we also add dependency on the last and second last boundary point 
+(if Dirichlet is used at RHS, uₙ and uₙ₋₁ are used)  and on L since each equation has dLdt and L.
+=#
+function get_nnz_itr(i, n)
+    if i == 1
+        return (1, 2, n, n - 1, n + 1)
+    elseif 1 < i < n - 2
+        return (i - 1, i, i + 1, n, n - 1, n + 1)
+    elseif i == n - 2
+        return (n - 3, n - 2, n - 1, n, n + 1)
+    elseif i == n - 1
+        return (n - 2, n - 1, n, n + 1)
+    elseif i == n
+        return (n, n - 1, n + 1)
+    else # i == n + 1 
+        return (n, n - 1, n + 1)
+    end
+end
 jacobian_sparsity(prob::MBProblem) = jacobian_sparsity(prob.geometry.mesh_points)
 function jacobian_sparsity(pts)
     n = length(pts)
-    num_nnz = 5n - 2
+    num_nnz = 6n - 4
     I = zeros(Int64, num_nnz)
     J = zeros(Int64, num_nnz)
     V = ones(num_nnz)
-    I[1] = 1
-    J[1] = 1
-    I[2] = 1
-    J[2] = 2
-    I[3] = 1
-    J[3] = n
-    I[4] = 1
-    J[4] = n + 1
-    ctr = 5
-    for i in 2:(n-2)
-        I[ctr] = i
-        J[ctr] = i - 1
-        ctr += 1
-        I[ctr] = i
-        J[ctr] = i
-        ctr += 1
-        I[ctr] = i
-        J[ctr] = i + 1
-        ctr += 1
-        I[ctr] = i
-        J[ctr] = n
-        ctr += 1
-        I[ctr] = i
-        J[ctr] = n + 1
-        ctr += 1
+    ctr = 1
+    for i in 1:(n+1)
+        itr = get_nnz_itr(i, n)
+        for j in itr
+            I[ctr] = i
+            J[ctr] = j
+            ctr += 1
+        end
     end
-    I[ctr] = n - 1
-    J[ctr] = n - 2
-    ctr += 1
-    I[ctr] = n - 1
-    J[ctr] = n - 1
-    ctr += 1
-    I[ctr] = n - 1
-    J[ctr] = n
-    ctr += 1
-    I[ctr] = n - 1
-    J[ctr] = n + 1
-    ctr += 1
-    I[ctr] = n
-    J[ctr] = n - 1
-    ctr += 1
-    I[ctr] = n
-    J[ctr] = n
-    ctr += 1
-    I[ctr] = n
-    J[ctr] = n + 1
-    ctr += 1
-    I[ctr] = n + 1
-    J[ctr] = n
-    ctr += 1
-    I[ctr] = n + 1
-    J[ctr] = n + 1
     return sparse(I, J, V)
 end

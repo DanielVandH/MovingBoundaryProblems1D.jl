@@ -95,7 +95,7 @@ Robin(a::Number, b::Number) =
     let a = a, b = b
         Robin((u, t, p) -> (oftype(u, a), oftype(u, b)))
     end
-Robin(a₂::Function, b₂::Function, p=nothing) =
+Robin(a₂::Function, b₂::Function, p) =
     let f = a₂, g = b₂, p = p
         Robin((u, t, p) -> (f(u, t, p), g(u, t, p)), p)
     end
@@ -108,7 +108,7 @@ is_robin(::AbstractBoundaryCondition) = false
 is_robin(::Robin) = true
 
 """
-    BoundaryConditions{L<:AbstractBoundaryCondition,R<:AbstractBoundaryCondition,M<:AbstractBoundaryCondition}
+    BoundaryConditions{L<:Union{<:Dirichlet, <:Neumann},R<:Union{<:Dirichlet, <:Neumann},M<:Robin}
 
 The boundary conditions for the `MBProblem`.
     
@@ -120,8 +120,18 @@ The boundary conditions for the `MBProblem`.
 See also [`Dirichlet`](@ref), [`Neumann`](@ref), and [`Robin`](@ref) for the types of 
 boundary conditions you can construct.
 """
-Base.@kwdef struct BoundaryConditions{L<:Tuple{<:Dirichlet, <:Neumann},R<:Tuple{<:Dirichlet, <:Neumann},M<:Robin}
+Base.@kwdef struct BoundaryConditions{L,R,M}
     lhs::L
     rhs::R
     moving_boundary::M
+    function BoundaryConditions(lhs::L, rhs::R, moving_boundary::M) where {L,R,M}
+        if !(is_dirichlet(lhs) || is_neumann(lhs))
+            throw(MethodError(BoundaryConditions, (lhs, rhs, moving_boundary)))
+        elseif !(is_dirichlet(rhs) || is_neumann(rhs))
+            throw(MethodError(BoundaryConditions, (lhs, rhs, moving_boundary)))
+        elseif !is_robin(moving_boundary)
+            throw(MethodError(BoundaryConditions, (lhs, rhs, moving_boundary)))
+        end
+        new{L,R,M}(lhs, rhs, moving_boundary)
+    end
 end
