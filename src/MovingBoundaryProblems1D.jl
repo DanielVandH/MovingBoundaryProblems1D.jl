@@ -4,7 +4,7 @@ using SparseArrays
 using SciMLBase
 using CommonSolve
 
-export FVMGeometry, BoundaryConditions, FVMProblem
+export MBGeometry, BoundaryConditions, MBProblem
 export Dirichlet, Neumann, Robin
 export solve
 
