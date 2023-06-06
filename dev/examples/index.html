@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Examples · MovingBoundaryProblems1D.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://DanielVandH.github.io/MovingBoundaryProblems1D.jl/examples/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">MovingBoundaryProblems1D.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Examples</a><ul class="internal"><li><a class="tocitem" href="#Example-I:-Heat-equation"><span>Example I: Heat equation</span></a></li><li><a class="tocitem" href="#Example-II:-One-phase-Stefan-problem-and-steady-states"><span>Example II: One-phase Stefan problem and steady states</span></a></li><li><a class="tocitem" href="#Example-III:-Fisher-Stefan-model,-exploring-the-spreading-extinction-dichotomy"><span>Example III: Fisher-Stefan model, exploring the spreading-extinction dichotomy</span></a></li><li><a class="tocitem" href="#Example-IV:-Dirichlet-boundary-conditions-and-a-parabolic-initial-condition"><span>Example IV: Dirichlet boundary conditions and a parabolic initial condition</span></a></li></ul></li><li><a class="tocitem" href="../math/">Mathematical Details</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Examples</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Examples</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/DanielVandH/MovingBoundaryProblems1D.jl/blob/main/docs/src/examples.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Examples"><a class="docs-heading-anchor" href="#Examples">Examples</a><a id="Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Examples" title="Permalink"></a></h1><p>This section gives some examples for how the package can be used. </p><h2 id="Example-I:-Heat-equation"><a class="docs-heading-anchor" href="#Example-I:-Heat-equation">Example I: Heat equation</a><a id="Example-I:-Heat-equation-1"></a><a class="docs-heading-anchor-permalink" href="#Example-I:-Heat-equation" title="Permalink"></a></h2><p>We start with a simple problem that has an exact solution, as discussed in e.g. <a href="https://doi.org/10.1016/S0377-0427(97)00034-4">this paper</a>. The problem is a heat equation with a moving boundary (or a one-phase classical Stefan problem):</p><p class="math-container">\[\begin{align*}
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Examples · MovingBoundaryProblems1D.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://DanielVandH.github.io/MovingBoundaryProblems1D.jl/examples/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">MovingBoundaryProblems1D.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Examples</a><ul class="internal"><li><a class="tocitem" href="#Example-I:-Heat-equation"><span>Example I: Heat equation</span></a></li><li><a class="tocitem" href="#Example-II:-One-phase-Stefan-problem-and-steady-states"><span>Example II: One-phase Stefan problem and steady states</span></a></li><li><a class="tocitem" href="#Example-III:-Fisher-Stefan-model,-exploring-the-spreading-extinction-dichotomy"><span>Example III: Fisher-Stefan model, exploring the spreading-extinction dichotomy</span></a></li><li><a class="tocitem" href="#Example-IV:-Dirichlet-boundary-conditions-and-a-parabolic-initial-condition"><span>Example IV: Dirichlet boundary conditions and a parabolic initial condition</span></a></li><li><a class="tocitem" href="#Example-V:-Epithelial-dynamics"><span>Example V: Epithelial dynamics</span></a></li></ul></li><li><a class="tocitem" href="../math/">Mathematical Details</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Examples</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Examples</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/DanielVandH/MovingBoundaryProblems1D.jl/blob/main/docs/src/examples.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Examples"><a class="docs-heading-anchor" href="#Examples">Examples</a><a id="Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Examples" title="Permalink"></a></h1><p>This section gives some examples for how the package can be used. </p><h2 id="Example-I:-Heat-equation"><a class="docs-heading-anchor" href="#Example-I:-Heat-equation">Example I: Heat equation</a><a id="Example-I:-Heat-equation-1"></a><a class="docs-heading-anchor-permalink" href="#Example-I:-Heat-equation" title="Permalink"></a></h2><p>We start with a simple problem that has an exact solution, as discussed in e.g. <a href="https://doi.org/10.1016/S0377-0427(97)00034-4">this paper</a>. The problem is a heat equation with a moving boundary (or a one-phase classical Stefan problem):</p><p class="math-container">\[\begin{align*}
 \begin{array}{rcll}
 \dfrac{\partial u}{\partial t} &amp; = &amp; \dfrac{\partial^2u}{\partial x^2} &amp; 0 &lt; x &lt; L(t), \\[9pt]
 \dfrac{\partial u}{\partial t} &amp; = &amp; -\exp(t) &amp; x = 0,\, t &gt; 0, \\[9pt]
@@ -236,4 +236,92 @@ let x = (stack ∘ scaled_mesh_points)(prob, sol), t = repeat(sol.t, inner=lengt
     resize_to_layout!(fig)
 end</code></pre><figure>
     <img src='../figures/parabolic.png', alt'Solution to the parabolic problem'><br>
-</figure></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../math/">Mathematical Details »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Tuesday 6 June 2023 03:59">Tuesday 6 June 2023</span>. Using Julia version 1.9.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</figure><h2 id="Example-V:-Epithelial-dynamics"><a class="docs-heading-anchor" href="#Example-V:-Epithelial-dynamics">Example V: Epithelial dynamics</a><a id="Example-V:-Epithelial-dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Example-V:-Epithelial-dynamics" title="Permalink"></a></h2><p>We now consider a free boundary model of epithelial dynamics, following <a href="https://doi.org/10.1016/j.jtbi.2018.12.025">Baker et al. (2019)</a> - refer to this paper for more detail about this problem. </p><p>The PDE we take is</p><p class="math-container">\[\begin{align*}
+\begin{array}{rcll}
+\dfrac{\partial q}{\partial t} &amp; = &amp; \dfrac{\partial}{\partial x}\left(D(q)\dfrac{\partial q}{\partial x}\right) + qG\left(\dfrac{1}{q}\right) &amp; 0 &lt; x &lt; L(t),\,t&gt;0,\\[9pt]
+\dfrac{\partial q}{\partial x} &amp; = &amp; 0 &amp; x = 0,\,t&gt;0,\\[9pt]
+\dfrac{1}{\eta}F\left(\dfrac{1}{q}\right) + \dfrac{D(q)}{2q}\dfrac{\partial q}{\partial x} &amp; = &amp; 0 &amp; x = L(t),\,t&gt;0,\\[9pt] 
+\dfrac{\mathrm dL}{\mathrm dt} &amp; = &amp; -\dfrac{D(q)}{q}\dfrac{\partial q}{\partial x} &amp; x = L(t),\,t&gt;0, \\[9pt]
+q(x, 0) &amp; = &amp; q_0(x) &amp; 0 \leq x \leq L(0).
+\end{array}
+\end{align*}\]</p><p>For the parameters of this problem, we take (these parameters follow a similar example in <a href="https://doi.org/10.1007/s11538-020-00807-x">Murphy et al. (2020)</a>):</p><ol><li><em>Linear force law</em>: <span>$F(q) = k(s-q)$</span> </li><li><em>Diffusion function</em>: <span>$D(q) = k/(\eta q^2)$</span>;</li><li><em>Proliferation law</em>: <span>$G(q) = \beta$</span>;</li><li><em>Spring constant</em>: <span>$k = 10$</span>;</li><li><em>Resting spring length</em>: <span>$s = 0$</span>;</li><li><em>Viscosity coefficient</em>: <span>$\eta = 1$</span>;</li><li><em>Intrinsic proliferation rate</em>: <span>$\beta = 0.00577$</span>. (This value is chosen so that <span>$\int_0^{400} u(x, 400)\,\mathrm dx \approx 400$</span>.)</li></ol><p>To define <span>$q_0(x)$</span>, we take a Gaussian initial density with variance three centred at <span>$x = L_0/2$</span>, where <span>$L_0 = 10$</span>, and we then scale it such that <span>$N(0) = 40$</span>, where <span>$N(t) = \int_0^{L(t)} q(x, t)\,\mathrm dx$</span> is the number of cells at the time <span>$t$</span>. To find this <span>$q_0(x)$</span>, write</p><p class="math-container">\[q_0(x) = \dfrac{A}{\sqrt{2\pi \sigma^2}}\exp\left\{-\dfrac{1}{2}\left(\dfrac{x - L_0/2}{\sigma}\right)^2\right\},\]</p><p>where <span>$\sigma^2 = 3$</span>. Integrating this, we find that </p><p class="math-container">\[\int_0^{L_0} q_0(x)\,\mathrm dx = A\text{erf}\left(\dfrac{L_0}{4\sigma}\sqrt{2}\right).\]</p><p>So, setting <span>$N(0) = A\text{erf}(L_0\sqrt{2}/4\sigma)$</span>, we find</p><p class="math-container">\[q_0(x) = \dfrac{N(0)}{\text{erf}\left(\dfrac{L_0}{4\sigma}\sqrt{2}\right)\sqrt{2\pi\sigma^2}}\exp\left\{-\dfrac{\left(2x - L_0\right)^2}{8\sigma^2}\right\}.\]</p><p>The last thing to do before we define our problem is to rearrange the boundary condition at <span>$x = L(t)$</span> into the form <span>$\partial q/\partial x = a_2(q(L(t), t), t)$</span>:</p><p class="math-container">\[\dfrac{\partial q(L(t), t)}{\partial x} = -\dfrac{2q}{\eta D(q)}F\left(\dfrac{1}{q}\right).\]</p><p>Let&#39;s now construct and solve the problem.</p><pre><code class="language-julia hljs">using MovingBoundaryProblems1D, SpecialFunctions 
+
+## Define the parameters 
+k, s, η, β = 10.0, 1.0, 1.0, 0.00577
+F = (q, p) -&gt; p.k * (p.s - q)
+D = (q, p) -&gt; p.k / (p.η * q^2)
+G = (q, p) -&gt; p.β
+L₀ = 10.0
+N₀ = 40.0
+σ = sqrt(3)
+
+## Define the initial condition 
+mesh_points = LinRange(0, L₀, 1000)
+q₀ = x -&gt; N₀ * exp(-(2x - L₀)^2 / (8σ^2)) / (erf(L₀ * sqrt(2) / (4σ)) * sqrt(2π * σ^2))
+initial_condition = q₀.(mesh_points)
+
+## Define the PDE 
+diffusion_function = (q, x, t, p) -&gt; p.D(q, p)
+diffusion_parameters = (D=D, k=k, η=η)
+reaction_function = (q, x, t, p) -&gt; q * p.G(inv(q), p)
+reaction_parameters = (G=G, β=β)
+
+## Define the boundary conditions 
+lhs = Neumann(0.0)
+rhs_f = (q, t, p) -&gt; -2q * p.F(inv(q), p) / (p.η * p.D(q, p))
+rhs_p = (F=F, η=η, D=D, s=s, k=k)
+rhs = Neumann(rhs_f, rhs_p)
+moving_boundary_f = (q, t, p) -&gt; (zero(q), -p.D(q, p) / q)
+moving_boundary_p = (D=D, k=k, η=η)
+moving_boundary = Robin(moving_boundary_f, moving_boundary_p)
+
+## Define the problem 
+prob = MBProblem(mesh_points, lhs, rhs, moving_boundary;
+    diffusion_function,
+    diffusion_parameters,
+    reaction_function,
+    reaction_parameters,
+    initial_condition,
+    initial_endpoint=L₀,
+    final_time=400.0)
+
+## Solve the problem 
+using OrdinaryDiffEq, LinearSolve
+sol = solve(prob, TRBDF2(linsolve=KLUFactorization()))</code></pre><p>To visualise the solution, we will also look at the cell number <span>$N(t)$</span>. This cell number is computed using the following:</p><pre><code class="language-julia hljs">using DataInterpolations
+function integrate_solution(prob, sol)
+    mesh_points = scaled_mesh_points(prob, sol)
+    N = zeros(length(sol))
+    for i in eachindex(sol)
+        q = sol.u[i]
+        x = mesh_points[i]
+        interp = LinearInterpolation(q, x)
+        N[i] = DataInterpolations.integral(interp, x[begin], x[end])
+    end
+    return N
+end
+Nt = integrate_solution(prob, sol)</code></pre><p>We now plot.</p><pre><code class="language-julia hljs">using CairoMakie 
+
+fig = Figure(fontsize=33)
+colors = (:red, :blue, :black, :magenta, :darkgreen)
+
+ax1 = Axis(fig[1, 1], xlabel=L&quot;x&quot;, ylabel=L&quot;q(x, t)&quot;,
+    title=L&quot;(a): $q(x, t)$&quot;, titlealign=:left,
+    width=600, height=300)
+ax2 = Axis(fig[1, 2], xlabel=L&quot;t&quot;, ylabel=L&quot;N(t)&quot;,
+    title=L&quot;(b): $N(t)$&quot;, titlealign=:left,
+    width=600, height=300)
+ax3 = Axis(fig[1, 3], xlabel=L&quot;t&quot;, ylabel=L&quot;L(t)&quot;,
+    title=L&quot;(c): $L(t)$&quot;, titlealign=:left,
+    width=600, height=300)
+
+t = [0.0, 100.0, 200.0, 300.0, 400.0]
+qL = sol.(t)
+q = [@views qL[begin:(end-1)] for qL in qL]
+L = [qL[end] for qL in qL]
+ξ_grid = prob.geometry.mesh_points
+[lines!(ax1, ξ_grid .* L[i], q[i], color=colors[i]) for i in eachindex(q)]
+lines!(ax2, sol.t, Nt, color=:black, linewidth=3)
+lines!(ax3, sol.t, @views(sol[end, :]), color=:black, linewidth=3)
+resize_to_layout!(fig)</code></pre><figure>
+    <img src='../figures/epithelial.png', alt'Solution to the epithelial problem'><br>
+</figure></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../math/">Mathematical Details »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Tuesday 6 June 2023 07:02">Tuesday 6 June 2023</span>. Using Julia version 1.9.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
