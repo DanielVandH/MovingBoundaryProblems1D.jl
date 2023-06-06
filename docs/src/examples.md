@@ -385,3 +385,55 @@ We could go further and explore the crtiical length, verifying the results of [D
 2. If $L(0) < \pi/2$, the population goes extinct and $L(0) < \lim_{t \to \infty} L(t) < \pi/2$.
 
 We do not do this here, though.
+
+## Example IV: Dirichlet boundary conditions and a parabolic initial condition 
+
+We now consider
+
+```math
+\begin{align*}
+\begin{array}{rcll}
+\dfrac{\partial u}{\partial t} & = & \dfrac{\partial^2u}{\partial x^2} + u(1-u) & 0 < x < L(t), \, t>0, \\[9pt]
+u(0, t) & = & 0 & t > 0, \\[9pt]
+u(L(t), t) & = & 0 & t > 0, \\[9pt]
+\dfrac{\mathrm dL(t)}{\mathrm dt} & = & -\dfrac{1}{2}\dfrac{\partial u(L(t), t)}{\partial t} & t > 0, \\[9pt]
+u(x, 0) & = & 2x(1-x) & 0 \leq x \leq L(0), \\[9pt] 
+L(0) & = & 1.
+\end{array}
+\end{align*}
+```
+
+This problem can be solved as follows:
+
+```julia
+mesh_points = LinRange(0, 1, 1_000)
+diffusion_function = (u, x, t, p) -> one(u)
+reaction_function = (u, x, t, p) -> u * (one(u) - u)
+lhs = Dirichlet(0.0)
+rhs = Dirichlet(0.0)
+moving_boundary = Robin(0.0, -1/2)
+ic = x -> 2x * (1 - x)
+initial_condition = ic.(mesh_points)
+initial_endpoint = 1.0
+final_time = 0.4
+prob = MBProblem(mesh_points, lhs, rhs, moving_boundary;
+    diffusion_function,
+    reaction_function,
+    initial_condition,
+    initial_endpoint,
+    final_time)
+sol = solve(prob, TRBDF2(linsolve=KLUFactorization()))
+
+let x = (stack ∘ scaled_mesh_points)(prob, sol), t = repeat(sol.t, inner=length(mesh_points)), u = sol[begin:(end-1), :]
+    fig = Figure(fontsize=33)
+    ax = Axis(fig[1, 1], width=600, height=300, xlabel=L"x", ylabel=L"t")
+    tricontourf!(ax, vec(x), t, vec(u), levels=0.0:0.05:0.5, extendlow=:auto)
+    resize_to_layout!(fig)
+end
+```
+
+```@raw html
+<figure>
+    <img src='../figures/parabolic.png', alt'Solution to the parabolic problem'><br>
+</figure>
+```

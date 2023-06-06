@@ -25,4 +25,7 @@ end
     @safetestset "Fisher-Stefan" begin
         include("fisher_stefan.jl")
     end
+    @safetestset "Parabolic" begin
+        include("parabolic.jl")
+    end
 end
