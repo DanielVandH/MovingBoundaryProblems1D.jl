@@ -464,7 +464,7 @@ For the parameters of this problem, we take (these parameters follow a similar e
 4. _Spring constant_: $k = 10$;
 5. _Resting spring length_: $s = 0$;
 6. _Viscosity coefficient_: $\eta = 1$;
-7. _Intrinsic proliferation rate_: $\beta = 0.00577$. (This value is chosen so that $\int_0^{400} u(x, 400)\,\mathrm dx \approx 400$.)
+7. _Intrinsic proliferation rate_: $\beta = 0.00577$. (This value is chosen so that $\int_0^{400} q(x, 400)\,\mathrm dx \approx 400$.)
 
 To define $q_0(x)$, we take a Gaussian initial density with variance three centred at $x = L_0/2$, where $L_0 = 10$, and we then scale it such that $N(0) = 40$, where $N(t) = \int_0^{L(t)} q(x, t)\,\mathrm dx$ is the number of cells at the time $t$. To find this $q_0(x)$, write
 
