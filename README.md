@@ -19,6 +19,6 @@ L(0) & = & L_0.
 \end{align*}
 ```
 
-You can also use Dirichlet boundary conditions rather than Neumann boundary conditions for $u(0, t)$ and $u(L(t), t)$. 
+You can also use Dirichlet boundary conditions rather than Neumann boundary conditions for $u(0, t)$ and $u(L(t), t)$. We also provide methods for computing steady states of the above problem - see the docs.
 
 For examples on how to use it, please see the docs. 
