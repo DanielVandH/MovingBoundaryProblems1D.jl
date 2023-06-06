@@ -16,6 +16,11 @@ function SciMLBase.ODEProblem(prob::MBProblem;
     ode_problem = ODEProblem{true,S}(f, initial_condition, time_span, prob; callback=cb, kwargs...)
     return ode_problem
 end
+function SciMLBase.NonlinearProblem(prob::SteadyMBProblem; kwargs...)
+    ode_prob = ODEProblem(prob.prob; kwargs...)
+    nl_prob = NonlinearProblem{true}(ode_prob.f, ode_prob.u0, ode_prob.p; kwargs...)
+    return nl_prob
+end
 
 @inline function lhs_dirichlet(prob, has_saveat=true)
     cb = let is_dir = is_dirichlet(prob.boundary_conditions.lhs), has_sv = has_saveat
@@ -56,8 +61,20 @@ function update_rhs!(integrator)
     boundary_conditions = prob.boundary_conditions
     rhs = boundary_conditions.rhs
     val = rhs(u[begin], t)
-    u[end] = val
+    u[end-1] = val
     return nothing
 end
 
 CommonSolve.init(prob::MBProblem, alg; kwargs...) = CommonSolve.init(ODEProblem(prob; kwargs...), alg; kwargs...)
+CommonSolve.solve(prob::SteadyMBProblem, alg; kwargs...) = CommonSolve.solve(NonlinearProblem(prob; kwargs...), alg; kwargs...)
+
+"""
+    scaled_mesh_points(prob::MBProblem, sol)
+
+Given the solution `sol` to an `MBProblem` prob, returns the scaled grid points at each time.
+"""
+function scaled_mesh_points(prob::MBProblem, sol)
+    mesh_points = prob.geometry.mesh_points 
+    scaled = [mesh_points .* sol.u[i][end] for i in eachindex(sol)]
+    return scaled
+end

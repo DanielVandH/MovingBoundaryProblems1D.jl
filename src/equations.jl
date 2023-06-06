@@ -2,7 +2,6 @@ function mb_odes!(duLdt, uL, prob::P, t) where {P}
     u = @views uL[begin:(end-1)]
     L = uL[end]
     dudt = @views duLdt[begin:(end-1)]
-    n = length(u)
 
     mesh = prob.geometry
     mesh_points = mesh.mesh_points
@@ -25,16 +24,19 @@ function mb_odes!(duLdt, uL, prob::P, t) where {P}
         a₁ = rhs(u[end], t)
         dLdt = a₂ + a₁ * b₂
     else
-        hₙ₋₁ = h[end-1]
-        uₙ₋₁ = u[end-1]
+        hₙ₋₁ = h[end]
+        hₙ₋₂ = h[end-1]
         uₙ = u[end]
-        dLdt = a₂ + (b₂ / L) * (uₙ - uₙ₋₁) / hₙ₋₁
+        uₙ₋₁ = u[end-1]
+        uₙ₋₂ = u[end-2]
+        ∂q = hₙ₋₁ / (hₙ₋₂ * (hₙ₋₂ + hₙ₋₁)) * uₙ₋₂ - (hₙ₋₂ + hₙ₋₁) / (hₙ₋₂ * hₙ₋₁) * uₙ₋₁ + (hₙ₋₂ + 2hₙ₋₁) / (hₙ₋₂ * (hₙ₋₁ + hₙ₋₂)) * uₙ
+        dLdt = a₂ + (b₂ / L) * ∂q
     end
     duLdt[end] = dLdt
 
     # Now compute the dudt at the interior nodes
     for i in (firstindex(dudt)+1):(lastindex(dudt)-1)
-        Vᵢ = volumes[i]
+        Vᵢ = V[i]
         ξᵢ₋₁ = mesh_points[i-1]
         ξᵢ = mesh_points[i]
         ξᵢ₊₁ = mesh_points[i+1]
@@ -52,18 +54,18 @@ function mb_odes!(duLdt, uL, prob::P, t) where {P}
         Dᵢ = D(uᵢ, xᵢ, t, Dp)
         Dᵢ₊₁ = D(uᵢ₊₁, xᵢ₊₁, t, Dp)
         Rᵢ = R(uᵢ, xᵢ, t, Rp)
-        term1 = 1 / (Vᵢ * L) * dLdt * (eᵢ * (qᵢ + qᵢ₊₁) / 2 - wᵢ * (qᵢ₋₁ + qᵢ) / 2)
+        term1 = 1 / (Vᵢ * L) * dLdt * (eᵢ * (uᵢ + uᵢ₊₁) / 2 - wᵢ * (uᵢ₋₁ + uᵢ) / 2)
         term2 = -(1 / L) * dLdt * uᵢ
         term3 = Rᵢ
-        term4 = 1 / (Vᵢ * L^2) * (((Dᵢ + Dᵢ₊₁) / 2) * ((qᵢ₊₁ - qᵢ) / hᵢ) - ((Dᵢ₋₁ + Dᵢ) / 2) * ((qᵢ - qᵢ₋₁) / hᵢ₋₁))
+        term4 = 1 / (Vᵢ * L^2) * (((Dᵢ + Dᵢ₊₁) / 2) * ((uᵢ₊₁ - uᵢ) / hᵢ) - ((Dᵢ₋₁ + Dᵢ) / 2) * ((uᵢ - uᵢ₋₁) / hᵢ₋₁))
         dudt[i] = term1 + term2 + term3 + term4
     end
 
     # Get the LHS dudt 
     if is_dirichlet(lhs)
-        dudt[begin] = lhs(u[begin], t)
+        dudt[begin] = zero(dudt[begin])
     else
-        V₁ = volumes[begin]
+        V₁ = V[begin]
         ξ₁ = mesh_points[begin]
         ξ₂ = mesh_points[begin+1]
         x₁ = ξ₁ * L
@@ -76,23 +78,23 @@ function mb_odes!(duLdt, uL, prob::P, t) where {P}
         D₁ = D(u₁, x₁, t, Dp)
         D₂ = D(u₂, x₂, t, Dp)
         R₁ = R(u₁, x₁, t, Rp)
-        term1 = 1 / (V₁ * L) * dLdt * e₁ * ((q₁ + q₂) / 2)
+        term1 = 1 / (V₁ * L) * dLdt * e₁ * ((u₁ + u₂) / 2)
         term2 = -(1 / L) * dLdt * u₁
         term3 = R₁
-        term4 = 1 / (V₁ * L^2) * (((D₁ + D₂) / 2) * ((q₂ - q₁) / h₁) - D₁ * L * a₀)
+        term4 = 1 / (V₁ * L^2) * (((D₁ + D₂) / 2) * ((u₂ - u₁) / h₁) - D₁ * L * a₀)
         dudt[begin] = term1 + term2 + term3 + term4
     end
 
     # Get the RHS dudt
     if is_dirichlet(rhs)
-        dudt[end] = rhs(u[end], t)
+        dudt[end] = zero(dudt[end])
     else
-        Vₙ = volumes[end]
+        Vₙ = V[end]
         ξₙ₋₁ = mesh_points[end-1]
         ξₙ = mesh_points[end]
         xₙ₋₁ = ξₙ₋₁ * L
         xₙ = ξₙ * L
-        hₙ₋₁ = h[end-1]
+        hₙ₋₁ = h[end]
         uₙ₋₁ = u[end-1]
         uₙ = u[end]
         wₙ = (ξₙ₋₁ + ξₙ) / 2
@@ -100,13 +102,13 @@ function mb_odes!(duLdt, uL, prob::P, t) where {P}
         Dₙ₋₁ = D(uₙ₋₁, xₙ₋₁, t, Dp)
         Dₙ = D(uₙ, xₙ, t, Dp)
         Rₙ = R(uₙ, xₙ, t, Rp)
-        term1 = 1 / (Vₙ * L) * dLdt * (uₙ - wₙ * ((qₙ₋₁ + qₙ) / 2))
+        term1 = 1 / (Vₙ * L) * dLdt * (uₙ - wₙ * ((uₙ₋₁ + uₙ) / 2))
         term2 = -(1 / L) * dLdt * uₙ
         term3 = Rₙ
-        term4 = 1 / (Vₙ * L^2) * (Dₙ * L * a₁ - ((Dₙ₋₁ + Dₙ) / 2) * ((qₙ - qₙ₋₁) / hₙ₋₁))
+        term4 = 1 / (Vₙ * L^2) * (Dₙ * L * a₁ - ((Dₙ₋₁ + Dₙ) / 2) * ((uₙ - uₙ₋₁) / hₙ₋₁))
         dudt[end] = term1 + term2 + term3 + term4
     end
-    return nothing
+    return duLdt
 end
 
 #=

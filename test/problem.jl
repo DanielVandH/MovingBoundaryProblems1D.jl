@@ -61,3 +61,6 @@ prob = MBProblem(mesh_points, lhs, rhs, moving_boundary;
 @test prob.initial_endpoint == initial_endpoint
 @test prob.final_time == final_time
 @test prob.initial_time == 0.2
+
+sprob = SteadyMBProblem(prob)
+@test sprob.prob == prob

@@ -75,3 +75,13 @@ MBProblem(mesh_points, lhs, rhs, moving_boundary; kwargs...) = MBProblem(;
     geometry=MBGeometry(mesh_points),
     boundary_conditions=BoundaryConditions(lhs, rhs, moving_boundary),
     kwargs...)
+
+"""
+    SteadyMBProblem{M}
+
+Defines a steady-state problem for a moving boundary problem. Only has a 
+single field, `prob::MBProblem`.
+"""
+struct SteadyMBProblem{M}
+    prob::M
+end

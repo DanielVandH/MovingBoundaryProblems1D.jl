@@ -4,9 +4,10 @@ using SparseArrays
 using SciMLBase
 using CommonSolve
 
-export MBGeometry, BoundaryConditions, MBProblem
+export MBGeometry, BoundaryConditions, MBProblem, SteadyMBProblem
 export Dirichlet, Neumann, Robin
 export solve
+export scaled_mesh_points
 
 include("geometry.jl")
 include("boundary_conditions.jl")

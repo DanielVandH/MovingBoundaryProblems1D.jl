@@ -148,11 +148,17 @@ Now we handle $\mathrm dL/\mathrm dt$. If we have a boundary condition $\partial
 \end{align*}
 ```
 
-If instead we have a Dirichlet boundary condition on $q(1, t)$, we use a finite difference:
+If instead we have a Dirichlet boundary condition on $q(1, t)$, we use a three-point finite difference, writing (see e.g. [this paper](http://www.m-hikari.com/ijma/ijma-password-2009/ijma-password17-20-2009/bhadauriaIJMA17-20-2009.pdf)).
+
+```math
+\dfrac{\partial q}{\partial \xi} \approx \dfrac{h_{n-1}}{h_{n-2}\left(h_{n-2} + h_{n-1}\right)}q_{n-2} - \dfrac{h_{n-2} + h_{n-1}}{h_{n-2}h_{n-1}}q_{n-1} + \dfrac{h_{n-2} + 2h_{n-1}}{h_{n-2}\left(h_{n-1} + h_{n-2}\right)}q_n,
+```
+
+so that
 
 ```math
 \begin{align*}
-\dfrac{\mathrm dL}{\mathrm dt} & = a_2(q_n, t) + \dfrac{b_2(q_n, t)}{L}\left(\dfrac{q_n - q_{n-1}}{h_{n-1}}\right).
+\dfrac{\mathrm dL}{\mathrm dt} & = a_2(q_n, t) + \dfrac{b_2(q_n, t)}{L}\left(\dfrac{h_{n-1}}{h_{n-2}\left(h_{n-2} + h_{n-1}\right)}q_{n-2} - \dfrac{h_{n-2} + h_{n-1}}{h_{n-2}h_{n-1}}q_{n-1} + \dfrac{h_{n-2} + 2h_{n-1}}{h_{n-2}\left(h_{n-1} + h_{n-2}\right)}q_n\right).
 \end{align*}
 ```
 
