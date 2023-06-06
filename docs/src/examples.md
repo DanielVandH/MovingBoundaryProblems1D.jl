@@ -437,3 +437,158 @@ end
     <img src='../figures/parabolic.png', alt'Solution to the parabolic problem'><br>
 </figure>
 ```
+
+## Example V: Epithelial dynamics 
+
+We now consider a free boundary model of epithelial dynamics, following [Baker et al. (2019)](https://doi.org/10.1016/j.jtbi.2018.12.025) - refer to this paper for more detail about this problem. 
+
+The PDE we take is
+
+```math
+\begin{align*}
+\begin{array}{rcll}
+\dfrac{\partial q}{\partial t} & = & \dfrac{\partial}{\partial x}\left(D(q)\dfrac{\partial q}{\partial x}\right) + qG\left(\dfrac{1}{q}\right) & 0 < x < L(t),\,t>0,\\[9pt]
+\dfrac{\partial q}{\partial x} & = & 0 & x = 0,\,t>0,\\[9pt]
+\dfrac{1}{\eta}F\left(\dfrac{1}{q}\right) + \dfrac{D(q)}{2q}\dfrac{\partial q}{\partial x} & = & 0 & x = L(t),\,t>0,\\[9pt] 
+\dfrac{\mathrm dL}{\mathrm dt} & = & -\dfrac{D(q)}{q}\dfrac{\partial q}{\partial x} & x = L(t),\,t>0, \\[9pt]
+q(x, 0) & = & q_0(x) & 0 \leq x \leq L(0).
+\end{array}
+\end{align*}
+```
+
+For the parameters of this problem, we take (these parameters follow a similar example in [Murphy et al. (2020)](https://doi.org/10.1007/s11538-020-00807-x)):
+
+1. _Linear force law_: $F(q) = k(s-q)$ 
+2. _Diffusion function_: $D(q) = k/(\eta q^2)$;
+3. _Proliferation law_: $G(q) = \beta$;
+4. _Spring constant_: $k = 10$;
+5. _Resting spring length_: $s = 0$;
+6. _Viscosity coefficient_: $\eta = 1$;
+7. _Intrinsic proliferation rate_: $\beta = 0.00577$. (This value is chosen so that $\int_0^{400} u(x, 400)\,\mathrm dx \approx 400$.)
+
+To define $q_0(x)$, we take a Gaussian initial density with variance three centred at $x = L_0/2$, where $L_0 = 10$, and we then scale it such that $N(0) = 40$, where $N(t) = \int_0^{L(t)} q(x, t)\,\mathrm dx$ is the number of cells at the time $t$. To find this $q_0(x)$, write
+
+```math
+q_0(x) = \dfrac{A}{\sqrt{2\pi \sigma^2}}\exp\left\{-\dfrac{1}{2}\left(\dfrac{x - L_0/2}{\sigma}\right)^2\right\},
+```
+
+where $\sigma^2 = 3$. Integrating this, we find that 
+
+```math 
+\int_0^{L_0} q_0(x)\,\mathrm dx = A\text{erf}\left(\dfrac{L_0}{4\sigma}\sqrt{2}\right).
+``` 
+
+So, setting $N(0) = A\text{erf}(L_0\sqrt{2}/4\sigma)$, we find
+
+```math
+q_0(x) = \dfrac{N(0)}{\text{erf}\left(\dfrac{L_0}{4\sigma}\sqrt{2}\right)\sqrt{2\pi\sigma^2}}\exp\left\{-\dfrac{\left(2x - L_0\right)^2}{8\sigma^2}\right\}.
+```
+
+The last thing to do before we define our problem is to rearrange the boundary condition at $x = L(t)$ into the form $\partial q/\partial x = a_2(q(L(t), t), t)$:
+
+```math
+\dfrac{\partial q(L(t), t)}{\partial x} = -\dfrac{2q}{\eta D(q)}F\left(\dfrac{1}{q}\right).
+```
+
+Let's now construct and solve the problem.
+
+```julia
+using MovingBoundaryProblems1D, SpecialFunctions 
+
+## Define the parameters 
+k, s, η, β = 10.0, 1.0, 1.0, 0.00577
+F = (q, p) -> p.k * (p.s - q)
+D = (q, p) -> p.k / (p.η * q^2)
+G = (q, p) -> p.β
+L₀ = 10.0
+N₀ = 40.0
+σ = sqrt(3)
+
+## Define the initial condition 
+mesh_points = LinRange(0, L₀, 1000)
+q₀ = x -> N₀ * exp(-(2x - L₀)^2 / (8σ^2)) / (erf(L₀ * sqrt(2) / (4σ)) * sqrt(2π * σ^2))
+initial_condition = q₀.(mesh_points)
+
+## Define the PDE 
+diffusion_function = (q, x, t, p) -> p.D(q, p)
+diffusion_parameters = (D=D, k=k, η=η)
+reaction_function = (q, x, t, p) -> q * p.G(inv(q), p)
+reaction_parameters = (G=G, β=β)
+
+## Define the boundary conditions 
+lhs = Neumann(0.0)
+rhs_f = (q, t, p) -> -2q * p.F(inv(q), p) / (p.η * p.D(q, p))
+rhs_p = (F=F, η=η, D=D, s=s, k=k)
+rhs = Neumann(rhs_f, rhs_p)
+moving_boundary_f = (q, t, p) -> (zero(q), -p.D(q, p) / q)
+moving_boundary_p = (D=D, k=k, η=η)
+moving_boundary = Robin(moving_boundary_f, moving_boundary_p)
+
+## Define the problem 
+prob = MBProblem(mesh_points, lhs, rhs, moving_boundary;
+    diffusion_function,
+    diffusion_parameters,
+    reaction_function,
+    reaction_parameters,
+    initial_condition,
+    initial_endpoint=L₀,
+    final_time=400.0)
+
+## Solve the problem 
+using OrdinaryDiffEq, LinearSolve
+sol = solve(prob, TRBDF2(linsolve=KLUFactorization()))
+```
+
+To visualise the solution, we will also look at the cell number $N(t)$. This cell number is computed using the following:
+
+```julia
+using DataInterpolations
+function integrate_solution(prob, sol)
+    mesh_points = scaled_mesh_points(prob, sol)
+    N = zeros(length(sol))
+    for i in eachindex(sol)
+        q = sol.u[i]
+        x = mesh_points[i]
+        interp = LinearInterpolation(q, x)
+        N[i] = DataInterpolations.integral(interp, x[begin], x[end])
+    end
+    return N
+end
+Nt = integrate_solution(prob, sol)
+```
+
+We now plot.
+
+```julia
+using CairoMakie 
+
+fig = Figure(fontsize=33)
+colors = (:red, :blue, :black, :magenta, :darkgreen)
+
+ax1 = Axis(fig[1, 1], xlabel=L"x", ylabel=L"q(x, t)",
+    title=L"(a): $q(x, t)$", titlealign=:left,
+    width=600, height=300)
+ax2 = Axis(fig[1, 2], xlabel=L"t", ylabel=L"N(t)",
+    title=L"(b): $N(t)$", titlealign=:left,
+    width=600, height=300)
+ax3 = Axis(fig[1, 3], xlabel=L"t", ylabel=L"L(t)",
+    title=L"(c): $L(t)$", titlealign=:left,
+    width=600, height=300)
+
+t = [0.0, 100.0, 200.0, 300.0, 400.0]
+qL = sol.(t)
+q = [@views qL[begin:(end-1)] for qL in qL]
+L = [qL[end] for qL in qL]
+ξ_grid = prob.geometry.mesh_points
+[lines!(ax1, ξ_grid .* L[i], q[i], color=colors[i]) for i in eachindex(q)]
+lines!(ax2, sol.t, Nt, color=:black, linewidth=3)
+lines!(ax3, sol.t, @views(sol[end, :]), color=:black, linewidth=3)
+resize_to_layout!(fig)
+```
+
+```@raw html
+<figure>
+    <img src='../figures/epithelial.png', alt'Solution to the epithelial problem'><br>
+</figure>
+```
+

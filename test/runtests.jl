@@ -28,4 +28,7 @@ end
     @safetestset "Parabolic" begin
         include("parabolic.jl")
     end
+    @safetestset "Epithelial" begin
+        include("epithelial.jl")
+    end
 end
