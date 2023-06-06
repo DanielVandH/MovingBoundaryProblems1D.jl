@@ -18,3 +18,7 @@ L(0) & = & L_0.
 \end{array}
 \end{align*}
 ```
+
+You can also use Dirichlet boundary conditions rather than Neumann boundary conditions for $u(0, t)$ and $u(L(t), t)$. 
+
+For examples on how to use it, please see the docs. 
