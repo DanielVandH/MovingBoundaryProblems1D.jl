@@ -462,7 +462,7 @@ For the parameters of this problem, we take (these parameters follow a similar e
 2. _Diffusion function_: $D(q) = k/(\eta q^2)$;
 3. _Proliferation law_: $G(q) = \beta$;
 4. _Spring constant_: $k = 10$;
-5. _Resting spring length_: $s = 0$;
+5. _Resting spring length_: $s = 1$;
 6. _Viscosity coefficient_: $\eta = 1$;
 7. _Intrinsic proliferation rate_: $\beta = 0.00577$. (This value is chosen so that $\int_0^{400} q(x, 400)\,\mathrm dx \approx 400$.)
 
