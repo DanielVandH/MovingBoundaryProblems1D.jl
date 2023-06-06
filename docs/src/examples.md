@@ -28,7 +28,7 @@ The exact solution is $u(x, t) = \exp(t - x) - 1$, $L(t) = t$ for $0 \leq x \leq
 ```julia
 using MovingBoundaryProblems1D 
 
-# Define the exact solutions for gettig the initial data
+# Define the exact solutions for getting the initial data
 exact_u = (x, t) -> exp(t - x) - 1
 exact_L = t -> t
 
