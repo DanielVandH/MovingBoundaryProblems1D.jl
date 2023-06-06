@@ -15,6 +15,8 @@ Definition of an `MBProblem`.
 - `initial_time::FT`: The initial time.
 - `final_time::FT`: The final time.
 
+See also [`SteadyMBProblem`](@ref).
+
 # Constructors
 
 You can use the default constructor, but we also provide the constructor 
@@ -40,10 +42,11 @@ The `kwargs...` are as above, except without `geometry` and `boundary_conditions
 
 To solve the `MBProblem`, just use `solve` as you would in DifferentialEquations.jl. For example, 
 
-    sol = solve(prob, Tsit5(), saveat=0.1)
+    sol = solve(prob, TRBDF2(linsolve=KLUFactorization()), saveat=0.1)
 
 The solution in this case will be such that `sol.u[i]` has the values of `u` in `sol.u[i][begin:(end-1)]`, and the position 
-of the moving boundary at `sol.t[i]` in `sol.u[i][end]`.
+of the moving boundary at `sol.t[i]` in `sol.u[i][end]`. See also [`scaled_mesh_points`](@ref) for the corresponding 
+grid points.
 """
 Base.@kwdef struct MBProblem{T,DF,DP,RF,RP,L,R,M,IC,IE,FT}
     geometry::MBGeometry{T}
@@ -81,6 +84,12 @@ MBProblem(mesh_points, lhs, rhs, moving_boundary; kwargs...) = MBProblem(;
 
 Defines a steady-state problem for a moving boundary problem. Only has a 
 single field, `prob::MBProblem`.
+
+You can `solve` this problem as you would a `NonlinearProblem`, e.g. with 
+
+    solve(prob, alg)
+
+where `alg` is e.g. `DynamicSS(TRBDF2()))` from SteadyStateDiffEq.jl.
 """
 struct SteadyMBProblem{M}
     prob::M
