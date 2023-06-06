@@ -155,7 +155,7 @@ u(x, 0) = \begin{cases} \alpha & x < \beta, \\ 0 & x \geq \beta,\end{cases}
 where $\alpha = 1/2$ and $\beta = 1$. We start with $L(0) = \beta$. With these values, and $D = 0.1$ and $\kappa = 0.1$, we find
 
 ```math
-L_e &= 1 + \dfrac{0.1}{0.1}\int_0^1 \alpha \,\mathrm dx,
+L_e = 1 + \dfrac{0.1}{0.1}\int_0^1 \alpha \,\mathrm dx,
 ```
 
 or $L_e = 3/2$. We can verify this estimate by solving the problem:
@@ -245,9 +245,9 @@ This example considers the Fisher-Stefan model (see e.g. [this paper](https://do
 \dfrac{\partial u}{\partial t} & = & \dfrac{\partial^2 u}{\partial x^2} + u(1-u) & 0 < x < L(t), \, t > 0,\\[9pt]
 \dfrac{\partial u}{\partial x} & = & 0 & x = 0,\,t>0, \\[9pt]
 u & = & 0 & x = L(t),\,t>0, \\[9pt]
-\dfrac{\mathrm dL}{\mathrm dt} & = & -\kappa\dfrac{\partial u}{\partial x} & = & x = L(t),\, t>0, \\[9pt]
+\dfrac{\mathrm dL}{\mathrm dt} & = & -\kappa\dfrac{\partial u}{\partial x} & x = L(t),\, t>0, \\[9pt]
 u(x, 0) & = & \begin{cases} \alpha & x < \beta, \\ 0 & x \geq \beta, \end{cases} & 0 \leq x \leq L(0), \\[9pt]
-L(0) &= \beta,
+L(0) &=& \beta,
 \end{array}
 ```
 
