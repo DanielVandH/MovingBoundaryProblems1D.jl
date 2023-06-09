@@ -16,18 +16,23 @@ end
 end
 
 @testset "Examples" begin
+    println("Starting the Heat equation example.")
     @safetestset "Heat equation" begin
         include("heat_equation.jl")
     end
+    println("Starting the Stefan problem example.")
     @safetestset "Stefan problem" begin
         include("heat_stefan.jl")
     end
+    println("Starting the Fisher-Stefan problem example.")
     @safetestset "Fisher-Stefan" begin
         include("fisher_stefan.jl")
     end
+    println("Starting the Parabolic problem example.")
     @safetestset "Parabolic" begin
         include("parabolic.jl")
     end
+    println("Starting the Epithelial problem example.")
     @safetestset "Epithelial" begin
         include("epithelial.jl")
     end
