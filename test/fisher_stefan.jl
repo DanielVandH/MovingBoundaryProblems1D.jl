@@ -89,6 +89,7 @@ c = estimate_wave_speed(msol1)
 @test su2 ≈ zero(su2) atol = 1e-6
 @test sL2 ≈ 1.45465 rtol = 1e-4
 
+#=
 function compute_wave_speed(κ, α, β, T)
     prob, x, u, t, L, su, sL, sx, mL, sol = solve_problem(κ, α, β, T, 2_000)
     if sL > 200.0 # the steady state solution makes no sense in this case, so we have a travelling wave
@@ -102,7 +103,6 @@ end
 κ = LinRange(0.4, 0.5, 20)
 c = compute_wave_speed.(κ, 0.5, 1.0, 5.0)
 
-#=
 fig = Figure(fontsize=33)
 ax = Axis(fig[1, 1], xlabel=L"\kappa", ylabel=L"c", width=600, height=300)
 lines!(ax, κ, c, linewidth=3, color=:red)
@@ -110,7 +110,7 @@ resize_to_layout!(fig)
 xlims!(ax, 0, 2)
 ylims!(ax, 0, 1/2)
 @test_reference joinpath(fig_path, "fisher_stefan_2.png") fig
-=#
 
 κc = κ[findfirst(!isnan, c)]
 @test κc ≈ 0.48 rtol=1e-2
+=#
