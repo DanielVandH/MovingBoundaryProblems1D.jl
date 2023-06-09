@@ -11,7 +11,7 @@ In this section, we provide some of the mathematical details for discretising th
 \begin{array}{rcll}
 \dfrac{\partial u(x, t)}{\partial t} & = & \dfrac{\partial}{\partial x}\left(D\left(u(x, t), x, t\right)\dfrac{\partial u(x, t)}{\partial x}\right) + R\left(u(x, t), x, t\right) & 0 < x < L(t),\, t>0, \\[9pt]
 \dfrac{\partial u(0, t)}{\partial x} & = & a_0\left(u(0, t), t\right) & x = 0,\,t>0, \\[9pt]
-\dfrac{\partial u(L(t), t)}{\partial x} & = & a_1\left(u(L(t), t)\right) & x=L(t),\,t>0, \\[9pt]
+\dfrac{\partial u(L(t), t)}{\partial x} & = & a_1\left(u(L(t), t), t\right) & x=L(t),\,t>0, \\[9pt]
 \dfrac{\mathrm dL}{\mathrm dt} & = & a_2\left(u(L(t), t), t\right) + b_2\left(u(L(t), t), t\right)\dfrac{\partial u(L(t), t)}{\partial x} & x = L(t),\,t>0, \\[9pt]
 u(x, 0) & = & u_0(x) & 0 \leq x \leq L(0), \\[9pt]
 L(0) & = & L_0.
