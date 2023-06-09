@@ -55,13 +55,13 @@ sol = solve(prob, TRBDF2(linsolve=KLUFactorization()))
 
 ## Compute the cell numbers 
 function integrate_solution(prob, sol)
-    mesh_points = scaled_mesh_points(prob, sol)
     N = zeros(length(sol))
+    x = prob.geometry.mesh_points
     for i in eachindex(sol)
-        q = sol.u[i]
-        x = mesh_points[i]
+        q = @views sol.u[i][begin:(end-1)]
+        L = sol.u[i][end]
         interp = LinearInterpolation(q, x)
-        N[i] = DataInterpolations.integral(interp, x[begin], x[end])
+        N[i] = DataInterpolations.integral(interp, 0.0, 1.0) * L # ∫₀ᴸ q(x) dx = L∫₀¹ q(ξ) dξ 
     end
     return N
 end
