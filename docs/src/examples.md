@@ -297,6 +297,9 @@ end
 Using this function, let us look at the solutions for $\kappa=20$ and $\kappa=0.45$, taking $\alpha=1/2$ and $\beta=1$.
 
 ```julia
+prob1, x1, u1, t1, L1, su1, sL1, sx1, mL1, msol1 = solve_problem(20.0, 0.5, 1.0, 20.0);
+prob2, x2, u2, t2, L2, su2, sL2, sx2, mL2, msol2 = solve_problem(0.45, 0.5, 1.0, 20.0);
+
 using CairoMakie
 fig = Figure(fontsize=33)
 idx_rng = (1, 50, 100, 150, 200, 250)
