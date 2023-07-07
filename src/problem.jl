@@ -44,9 +44,10 @@ To solve the `MBProblem`, just use `solve` as you would in DifferentialEquations
 
     sol = solve(prob, TRBDF2(linsolve=KLUFactorization()), saveat=0.1)
 
-The solution in this case will be such that `sol.u[i]` has the values of `u` in `sol.u[i][begin:(end-1)]`, and the position 
-of the moving boundary at `sol.t[i]` in `sol.u[i][end]`. See also [`scaled_mesh_points`](@ref) for the corresponding 
-grid points.
+solves the problem using the `TRBDF2()` algorithm, with the associated linear systems solved with the sparse solver `KLUFactorization()`,
+and the solution will be saved every `0.1` units of time from `initial_time` up to, and including, `final_time`. The solution in this case 
+will be such that `sol.u[i]` has the values of `u` in `sol.u[i][begin:(end-1)]`, and the position of the moving boundary at `sol.t[i]` in 
+`sol.u[i][end]`. See also [`scaled_mesh_points`](@ref) for the corresponding grid points.
 """
 Base.@kwdef struct MBProblem{T,DF,DP,RF,RP,L,R,M,IC,IE,FT}
     geometry::MBGeometry{T}
