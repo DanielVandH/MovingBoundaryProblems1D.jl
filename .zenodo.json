@@ -1,0 +1,21 @@
+{
+	"creators": [
+		{
+			"affiliation": "Queensland University of Technology",
+			"name": "VandenHeuvel, Daniel John",
+			"orcid": "0000-0001-6462-0135"
+		}
+	],
+	"description": "MovingBoundaryProblems1D.jl: Implementation of the finite volume method for moving boundary problems in 1D.",
+	"keywords": [
+		"partial-differential-equations",
+    "differential-equations",
+    "boundary-conditions",
+    "one-dimensional",
+    "finite-volume-methods"
+	],
+	"license": "MIT",
+	"title": "MovingBoundaryProblems1D.jl",
+	"upload_type": "software",
+	"language": "eng"
+}
