@@ -9,10 +9,10 @@
 	"description": "MovingBoundaryProblems1D.jl: Implementation of the finite volume method for moving boundary problems in 1D.",
 	"keywords": [
 		"partial-differential-equations",
-    "differential-equations",
-    "boundary-conditions",
-    "one-dimensional",
-    "finite-volume-methods"
+    	"differential-equations",
+    	"boundary-conditions",
+    	"one-dimensional",
+    	"finite-volume-methods"
 	],
 	"license": "MIT",
 	"title": "MovingBoundaryProblems1D.jl",
