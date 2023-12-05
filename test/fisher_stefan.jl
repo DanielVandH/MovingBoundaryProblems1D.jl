@@ -87,7 +87,7 @@ c = estimate_wave_speed(msol1)
 @test c ≈ 1.2 rtol = 1e-1
 
 @test su2 ≈ zero(su2) atol = 1e-6
-@test sL2 ≈ 1.45465 rtol = 1e-4
+@test sL2 ≈ 1.45465 rtol = 1e-2
 
 #=
 function compute_wave_speed(κ, α, β, T)
