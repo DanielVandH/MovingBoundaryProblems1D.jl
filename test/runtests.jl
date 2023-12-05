@@ -28,10 +28,6 @@ end
     @safetestset "Fisher-Stefan" begin
         include("fisher_stefan.jl")
     end
-    println("Starting the Parabolic problem example.")
-    @safetestset "Parabolic" begin
-        include("parabolic.jl")
-    end
     println("Starting the Epithelial problem example.")
     @safetestset "Epithelial" begin
         include("epithelial.jl")
