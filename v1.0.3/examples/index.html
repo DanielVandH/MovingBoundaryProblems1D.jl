@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Examples · MovingBoundaryProblems1D.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://DanielVandH.github.io/MovingBoundaryProblems1D.jl/examples/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">MovingBoundaryProblems1D.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Examples</a><ul class="internal"><li><a class="tocitem" href="#Example-I:-Heat-equation"><span>Example I: Heat equation</span></a></li><li><a class="tocitem" href="#Example-II:-One-phase-Stefan-problem-and-steady-states"><span>Example II: One-phase Stefan problem and steady states</span></a></li><li><a class="tocitem" href="#Example-III:-Fisher-Stefan-model,-exploring-the-spreading-extinction-dichotomy"><span>Example III: Fisher-Stefan model, exploring the spreading-extinction dichotomy</span></a></li><li><a class="tocitem" href="#Example-IV:-Epithelial-dynamics"><span>Example IV: Epithelial dynamics</span></a></li></ul></li><li><a class="tocitem" href="../math/">Mathematical Details</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Examples</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Examples</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/DanielVandH/MovingBoundaryProblems1D.jl/blob/main/docs/src/examples.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Examples"><a class="docs-heading-anchor" href="#Examples">Examples</a><a id="Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Examples" title="Permalink"></a></h1><p>This section gives some examples for how the package can be used. </p><h2 id="Example-I:-Heat-equation"><a class="docs-heading-anchor" href="#Example-I:-Heat-equation">Example I: Heat equation</a><a id="Example-I:-Heat-equation-1"></a><a class="docs-heading-anchor-permalink" href="#Example-I:-Heat-equation" title="Permalink"></a></h2><p>We start with a simple problem that has an exact solution, as discussed in e.g. <a href="https://doi.org/10.1016/S0377-0427(97)00034-4">this paper</a>. The problem is a heat equation with a moving boundary (or a one-phase classical Stefan problem):</p><p class="math-container">\[\begin{align*}
+\begin{array}{rcll}
+\dfrac{\partial u}{\partial t} &amp; = &amp; \dfrac{\partial^2u}{\partial x^2} &amp; 0 &lt; x &lt; L(t), \\[9pt]
+\dfrac{\partial u}{\partial t} &amp; = &amp; -\exp(t) &amp; x = 0,\, t &gt; 0, \\[9pt]
+u &amp; = &amp; 0 &amp; x = L(t),\,t&gt;0, \\[9pt]
+\dfrac{\mathrm dL}{\mathrm dt} &amp; = &amp; -\dfrac{\partial u}{\partial x} &amp; x = L(t),\,t&gt;0, \\[9pt] 
+L(0) &amp; = &amp; 0 \\[9pt]
+u(x, 0) &amp; = &amp; 0 &amp; 0 \leq x \leq L(0) = 0.
+\end{array}
+\end{align*}\]</p><p>The exact solution is <span>$u(x, t) = \exp(t - x) - 1$</span>, <span>$L(t) = t$</span> for <span>$0 \leq x \leq L(t)$</span> and <span>$0 &lt; t &lt; 1$</span>. Since we need to have <span>$L(0) &gt; 0$</span>, and the domain is just <span>$\{0\}$</span> at <span>$t = 0$</span>, we solve the problem starting at <span>$t = 0.1$</span> rather than <span>$t = 0$</span>. We setup the problem as follows:</p><pre><code class="language-julia hljs">using MovingBoundaryProblems1D 
+
+# Define the exact solutions for getting the initial data
+exact_u = (x, t) -&gt; exp(t - x) - 1
+exact_L = t -&gt; t
+
+# Define the boundary conditions
+lhs = Neumann((u, t, p) -&gt; -exp(t))
+rhs = Dirichlet(0.0)
+moving_boundary = Robin(0.0, -1.0)
+
+# Setup the initial data and the PDE
+initial_time = 0.1
+final_time = 0.5
+initial_endpoint = exact_L(initial_time)
+mesh_points = LinRange(0, initial_endpoint, 500)
+initial_condition = exact_u.(mesh_points, initial_time)
+diffusion_function = (u, x, t, p) -&gt; one(u)
+
+# Define the problem
+prob = MBProblem(mesh_points, lhs, rhs, moving_boundary;
+    diffusion_function,
+    initial_time,
+    final_time,
+    initial_endpoint,
+    initial_condition)</code></pre><p>The problem is then solved with <code>solve</code>, as is done in DifferentialEquations.jl.</p><pre><code class="language-julia hljs">using OrdinaryDiffEq, LinearSolve
+sol = solve(prob, TRBDF2(linsolve=KLUFactorization()), saveat=0.1)</code></pre><p>Now, for plotting the solution, we cannot simply use <code>mesh_points</code> since those are defined on <span>$[0, 1]$</span>. To obtain the scaled mesh points at each time, we use <code>scaled_mesh_points</code>:</p><pre><code class="language-julia hljs">julia&gt; scaled_mesh = scaled_mesh_points(prob, sol)
+5-element Vector{Vector{Float64}}:
+ [0.0, 0.0002004008016032064, 0.0004008016032064128, 0.0006012024048096193, 0.0008016032064128256, 0.001002004008016032, 0.0012024048096192386, 0.001402805611222445, 0.0016032064128256513, 0.001803607214428858  …  0.09819639278557114, 0.09839679358717435, 0.09859719438877756, 0.09879759519038077, 0.09899799599198397, 0.09919839679358718, 0.09939879759519038, 0.0995991983967936, 0.0997995991983968, 0.1]
+ [0.0, 0.00040080095829667935, 0.0008016019165933587, 0.0012024028748900382, 0.0016032038331867174, 0.002004004791483397, 0.0024048057497800764, 0.002805606708076756, 0.003206407666373435, 0.003607208624670115  …  0.1963924695653729, 0.19679327052366957, 0.19719407148196627, 0.19759487244026294, 0.1979956733985596, 0.1983964743568563, 0.19879727531515298, 0.19919807627344965, 0.19959887723174635, 0.19999967819004302]
+ [0.0, 0.0006012011247570208, 0.0012024022495140416, 0.0018036033742710623, 0.002404804499028083, 0.003006005623785104, 0.0036072067485421245, 0.004208407873299146, 0.004809608998056166, 0.005410810122813187  …  0.2945885511309402, 0.2951897522556972, 0.29579095338045425, 0.2963921545052112, 0.29699335562996826, 0.2975945567547253, 0.2981957578794823, 0.2987969590042393, 0.29939816012899634, 0.29999936125375337]
+ [0.0, 0.0008016010620834612, 0.0016032021241669224, 0.0024048031862503837, 0.0032064042483338447, 0.004008005310417306, 0.004809606372500767, 0.005611207434584229, 0.0064128084966676895, 0.007214409558751151  …  0.392784520420896, 0.39358612148297945, 0.39438772254506294, 0.39518932360714637, 0.39599092466922986, 0.3967925257313133, 0.3975941267933968, 0.3983957278554802, 0.3991973289175637, 0.39999892997964714]
+ [0.0, 0.001002000880061787, 0.002004001760123574, 0.0030060026401853607, 0.004008003520247148, 0.005010004400308935, 0.006012005280370721, 0.007014006160432509, 0.008016007040494296, 0.009018007920556083  …  0.4909804312302756, 0.4919824321103374, 0.4929844329903992, 0.493986433870461, 0.49498843475052273, 0.49599043563058454, 0.49699243651064634, 0.49799443739070814, 0.4989964382707699, 0.4999984391508317]</code></pre><p>Let us now make the plot. Notice that in the code we need to use <code>u[begin:(end-1)]</code> to get the values of the solution rather than simply <code>u</code>, since <code>u[end]</code> is where we store the value of <span>$L$</span>.</p><pre><code class="language-julia hljs">fig = Figure(fontsize=35)
+ax = Axis(fig[1, 1], xlabel=L&quot;x&quot;, ylabel=L&quot;u(x, t)&quot;, width=600, height=300)
+colors = [:red, :blue, :black, :magenta, :darkgreen]
+[lines!(ax, x, u[begin:(end-1)], color=clr, linewidth=1.5) for (x, u, clr) in zip(scaled_mesh, sol.u, colors)]
+[lines!(ax, x, exact_u.(x, t), color=clr, linestyle=:dash, linewidth=3) for (x, t, clr) in zip(scaled_mesh, sol.t, colors)]
+resize_to_layout!(fig)</code></pre><figure>
+    <img src='../figures/heat_equation.png', alt'Solution to the heat equation problem'><br>
+</figure><h2 id="Example-II:-One-phase-Stefan-problem-and-steady-states"><a class="docs-heading-anchor" href="#Example-II:-One-phase-Stefan-problem-and-steady-states">Example II: One-phase Stefan problem and steady states</a><a id="Example-II:-One-phase-Stefan-problem-and-steady-states-1"></a><a class="docs-heading-anchor-permalink" href="#Example-II:-One-phase-Stefan-problem-and-steady-states" title="Permalink"></a></h2><p>We now consider a second example. This problem is similar to the previous example, except we do not start with <span>$L(0) = L_0$</span>, we do not have an exact solution, and we will examine steady states. The problem is:</p><p class="math-container">\[\begin{array}{rcll}
+\dfrac{\partial u}{\partial t} &amp; = &amp; D\dfrac{\partial^2 u}{\partial x^2} &amp; 0 &lt; x &lt; L(t),\, t&gt; 0, \\[9pt]
+\dfrac{\partial u}{\partial x} &amp; = &amp; 0 &amp; x = 0,\,t&gt;0,\\[9pt]
+u &amp; = &amp; 0 &amp; x = L(t),\,t&gt;0,\\[9pt]
+\dfrac{\mathrm dL}{\mathrm dt} &amp; = &amp; -\kappa\dfrac{\partial u}{\partial x} &amp; x = L(t).
+\end{array}\]</p><p>As discussed in e.g. Eq. 1.6. of <a href="https://doi.org/10.1098/rspa.2019.0378">this paper</a>, <span>$u(x, t) \to 0$</span> and <span>$L(t) \to L_e$</span> as <span>$t \to \infty$</span>, where</p><p class="math-container">\[L_e = L(0) + \dfrac{\kappa}{D}\int_0^{L(0)} u(x, 0)\,\mathrm dx.\]</p><p>Out of interest, let us demonstrate how this is derived. Let us write</p><p class="math-container">\[\begin{align*}
+N(t) &amp;= \int_0^{L(t)} u(x, t)\,\mathrm dx \\[9pt]
+\dfrac{\mathrm dN}{\mathrm dt} &amp;= \dfrac{\mathrm dL}{\mathrm dt}\underbrace{u(L(t), t)}_0 + \int_0^{L(t)} \dfrac{\partial u}{\partial t}\,\mathrm dx \\[9pt]
+&amp;= \int_0^{L(t)} D\dfrac{\partial^2 u}{\partial x^2}\,\mathrm dx \\[9pt]
+&amp;= D\left[\dfrac{\partial u(L(t), t)}{\partial x} - \dfrac{\partial u(0, t)}{\partial x}\right] \\[9pt]
+&amp;= -\dfrac{D}{\kappa}\dfrac{\mathrm dL}{\mathrm dt}.
+\end{align*}\]</p><p>Now integrating, we obtain <span>$N(t) = -(D/\kappa)L(t) + C$</span> for some constant <span>$C$</span>. To evaluate this constant <span>$C$</span>, we integrate the initial condition:</p><p class="math-container">\[\begin{align*}
+\int_0^{L(0)} u(x, 0)\,\mathrm dx &amp;= -\dfrac{D}{\kappa}L(t) + C\\[9pt]
+C &amp;= \dfrac{D}{\kappa}L(0) + \int_0^{L(0)} u(x, 0)\,\mathrm dx.
+\end{align*}\]</p><p>Thus,</p><p class="math-container">\[N(t) = \dfrac{D}{\kappa}\left(L(0) - L(t)\right) + \int_0^{L(0)} u(x, 0)\,\mathrm dx.\]</p><p>Now take <span>$t \to \infty$</span> and note that <span>$N(t) \to 0$</span>, so that we get</p><p class="math-container">\[\begin{align*}
+0 &amp;= \dfrac{D}{\kappa}\left(L(0) - L_e\right) + \int_0^{L(0)} u(x, 0)\,\mathrm dx \\
+0 &amp;= L(0) - L_e + \dfrac{\kappa}{D}\int_0^{L(0)} u(x, 0)\,\mathrm dx \\
+L_e &amp;= L(0) + \dfrac{\kappa}{D}\int_0^{L(0)} u(x, 0)\,\mathrm dx.
+\end{align*}\]</p><p>We will explore <span>$L_e$</span> later. Let us start by now solving the problem. The initial condition we use is </p><p class="math-container">\[u(x, 0) = \begin{cases} \alpha &amp; x &lt; \beta, \\ 0 &amp; x \geq \beta,\end{cases}\]</p><p>where <span>$\alpha = 1/2$</span> and <span>$\beta = 1$</span>. We start with <span>$L(0) = \beta$</span>. With these values, and <span>$D = 0.1$</span> and <span>$\kappa = 0.1$</span>, we find</p><p class="math-container">\[L_e = 1 + \dfrac{0.1}{0.1}\int_0^1 \alpha \,\mathrm dx,\]</p><p>or <span>$L_e = 3/2$</span>. We can verify this estimate by solving the problem:</p><pre><code class="language-julia hljs">using MovingBoundaryProblems1D
+
+mesh_points = LinRange(0, 1, 500)
+
+D = 0.1
+diffusion_function = (u, x, t, p) -&gt; p
+diffusion_parameters = D
+lhs = Neumann(0.0)
+rhs = Dirichlet(0.0)
+κ = 0.1
+moving_boundary = Robin(0.0, -κ)
+
+α = 0.5
+β = 1.0
+ic = x -&gt; x &lt; β ? α : 0.0
+initial_condition = ic.(mesh_points)
+initial_endpoint = β
+final_time = 20.0
+
+prob = MBProblem(mesh_points, lhs, rhs, moving_boundary;
+    diffusion_function,
+    diffusion_parameters,
+    initial_condition,
+    initial_endpoint=initial_endpoint,
+    final_time)
+
+using OrdinaryDiffEq, LinearSolve 
+sol = solve(prob, TRBDF2(linsolve=KLUFactorization()), saveat=final_time / 250)
+
+using CairoMakie 
+let x = (stack ∘ scaled_mesh_points)(prob, sol), t = repeat(sol.t, inner=length(mesh_points)), u = sol[begin:(end-1), :]
+    fig = Figure(fontsize=33)
+    ax = Axis(fig[1, 1], width=600, height=300, xlabel=L&quot;x&quot;, ylabel=L&quot;t&quot;)
+    tricontourf!(ax, vec(x), t, vec(u))
+    resize_to_layout!(fig)
+end</code></pre><figure>
+    <img src='../figures/heat_stefan.png', alt'Solution to the Stefan problem'><br>
+</figure><p>We can indeed see that the solution is zero for large time, and the highest value of <span>$x$</span> is indeed around <span>$L_e = 3/2$</span>. </p><p>We provide a method for computing the steady state of a moving boundary problem. By wrapping the <code>prob</code> in <code>SteadyMBProblem</code>, another <code>solve</code> will give us the steady state:</p><pre><code class="language-julia hljs">using SteadyStateDiffEq 
+sprob = SteadyMBProblem(prob)</code></pre><pre><code class="language-julia-repl hljs">julia&gt; ssol = solve(sprob, DynamicSS(TRBDF2()))
+u: 501-element Vector{Float64}:
+ 3.8102357269537885e-8
+ 3.8102170476792114e-8
+ 3.8101610100268955e-8
+ 3.810067614511076e-8
+ 3.8099368619888047e-8
+ 3.80976875365995e-8
+ 3.8095632910671864e-8
+ ⋮
+ 6.020854039360681e-10
+ 4.816570994416517e-10
+ 3.61232957797933e-10
+ 2.4081442647367477e-10
+ 1.2040295600361738e-10
+ 0.0
+ 1.49942609487085</code></pre><p>Indeed, the first <span>$500$</span> components approximately constitute the zero vector, and the last component (where <span>$L$</span> is stored) is essentially <span>$L_e \approx 3/2$</span>.</p><h2 id="Example-III:-Fisher-Stefan-model,-exploring-the-spreading-extinction-dichotomy"><a class="docs-heading-anchor" href="#Example-III:-Fisher-Stefan-model,-exploring-the-spreading-extinction-dichotomy">Example III: Fisher-Stefan model, exploring the spreading-extinction dichotomy</a><a id="Example-III:-Fisher-Stefan-model,-exploring-the-spreading-extinction-dichotomy-1"></a><a class="docs-heading-anchor-permalink" href="#Example-III:-Fisher-Stefan-model,-exploring-the-spreading-extinction-dichotomy" title="Permalink"></a></h2><p>This example considers the Fisher-Stefan model (see e.g. <a href="https://doi.org/10.1098/rspa.2019.0378">this paper</a>). This model is given by (in non-dimensional form)</p><p class="math-container">\[\begin{array}{rcll}
+\dfrac{\partial u}{\partial t} &amp; = &amp; \dfrac{\partial^2 u}{\partial x^2} + u(1-u) &amp; 0 &lt; x &lt; L(t), \, t &gt; 0,\\[9pt]
+\dfrac{\partial u}{\partial x} &amp; = &amp; 0 &amp; x = 0,\,t&gt;0, \\[9pt]
+u &amp; = &amp; 0 &amp; x = L(t),\,t&gt;0, \\[9pt]
+\dfrac{\mathrm dL}{\mathrm dt} &amp; = &amp; -\kappa\dfrac{\partial u}{\partial x} &amp; x = L(t),\, t&gt;0, \\[9pt]
+u(x, 0) &amp; = &amp; \begin{cases} \alpha &amp; x &lt; \beta, \\ 0 &amp; x \geq \beta, \end{cases} &amp; 0 \leq x \leq L(0), \\[9pt]
+L(0) &amp;=&amp; \beta,
+\end{array}\]</p><p>A function that solves this for given <span>$(\kappa, \alpha, \beta, T)$</span>, where <span>$T$</span> is the final time, and also returns the steady state is given below:</p><pre><code class="language-julia hljs">using MovingBoundaryProblems1D
+using OrdinaryDiffEq, LinearSolve 
+using SteadyStateDiffEq 
+
+function construct_problem(𝝟, α, β, T, n=500)
+    mesh_points = LinRange(0, 1, n)
+    diffusion_function = (u, x, t, p) -&gt; one(u)
+    reaction_function = (u, x, t, p) -&gt; u * (one(u) - u)
+    lhs = Neumann(0.0)
+    rhs = Dirichlet(0.0)
+    moving_boundary = Robin(0.0, -κ)
+    ic = x -&gt; x &lt; β ? α : 0.0
+    initial_condition = ic.(mesh_points)
+    prob = MBProblem(
+        mesh_points, lhs, rhs, moving_boundary;
+        diffusion_function,
+        reaction_function,
+        initial_condition,
+        initial_endpoint=β,
+        final_time=T
+    )
+    return prob, mesh_points
+end
+function solve_problem(κ, α, β, T, n=500)
+    prob, mesh_points = construct_problem(κ, α, β, T, n)
+    sol = solve(prob, TRBDF2(linsolve=KLUFactorization()), saveat=T / 250)
+    scaled_mesh = scaled_mesh_points(prob, sol)
+    u = sol[begin:(end-1), :]
+    L = sol[end, :]
+    t = sol.t
+
+    sprob = SteadyMBProblem(prob)
+    ssol = solve(sprob, DynamicSS(TRBDF2()))
+    su = ssol.u[begin:(end-1)]
+    sL = ssol.u[end]
+
+    return prob, stack(scaled_mesh), u, t, L, su, sL, mesh_points .* sL, maximum(L), sol
+end</code></pre><p>Using this function, let us look at the solutions for <span>$\kappa=20$</span> and <span>$\kappa=0.45$</span>, taking <span>$\alpha=1/2$</span> and <span>$\beta=1$</span>.</p><pre><code class="language-julia hljs">prob1, x1, u1, t1, L1, su1, sL1, sx1, mL1, msol1 = solve_problem(20.0, 0.5, 1.0, 20.0);
+prob2, x2, u2, t2, L2, su2, sL2, sx2, mL2, msol2 = solve_problem(0.45, 0.5, 1.0, 20.0);
+
+using CairoMakie
+fig = Figure(fontsize=33)
+idx_rng = (1, 50, 100, 150, 200, 250)
+colors = (:red, :blue, :black, :magenta, :darkgreen, :orange)
+ax1 = Axis(fig[1, 1], width = 600, height = 300, xlabel=L&quot;x&quot;,ylabel=L&quot;u(x, t)&quot;, title=L&quot;(a): $\kappa = 20$&quot;, titlealign=:left)
+ax2 = Axis(fig[1, 2], width = 600, height = 300, xlabel=L&quot;x&quot;,ylabel=L&quot;u(x, t)&quot;, title=L&quot;(b): $\kappa = 0.45$&quot;, titlealign=:left)
+ax3 = Axis(fig[2, 1], width = 600, height = 300, xlabel=L&quot;x&quot;,ylabel=L&quot;t&quot;, title=L&quot;(c): $\kappa = 20$&quot;, titlealign=:left)
+ax4 = Axis(fig[2, 2], width = 600, height = 300, xlabel=L&quot;x&quot;,ylabel=L&quot;t&quot;, title=L&quot;(d): $\kappa = 20$&quot;, titlealign=:left)
+[lines!(ax1, x1[:, idx], u1[:, idx], color=clr, linewidth=1.5) for (idx, clr) in zip(idx_rng, colors)]
+[lines!(ax2, x2[:, idx], u2[:, idx], color=clr, linewidth=1.5) for (idx, clr) in zip(idx_rng, colors)]
+tricontourf!(ax3, vec(x1), repeat(t1, inner=size(x1, 1)), vec(u1), levels = 100)
+tricontourf!(ax4, vec(x2), repeat(t2, inner=size(x2, 1)), vec(u2), levels = 20)
+resize_to_layout!(fig)</code></pre><figure>
+    <img src='../figures/fisher_stefan_1.png', alt'Solution to the Fisher-Stefan problem'><br>
+</figure><p>We see that with <span>$\kappa=0.45$</span> the population goes extinct, but for <span>$\kappa = 20$</span> the solution evolves to a travelling wave with some speed <span>$c$</span>. We can estimate the wave speed <span>$c$</span> for <span>$\kappa=20$</span> as follows:</p><pre><code class="language-julia hljs">using StatsBase
+function estimate_wave_speed(sol)
+    Ls = @views sol[end, (end ÷ 2) : end] # only take late time 
+    ts = @views sol.t[(end ÷ 2) : end] 
+    cs = diff(Ls) ./ diff(ts)
+    return mean(cs)
+end</code></pre><pre><code class="language-julia-repl hljs">julia&gt; c = estimate_wave_speed(msol1)
+1.1860676450332943</code></pre><p>This estimate of <span>$c$</span> agrees with <span>$c \approx 1.2$</span> reported by <a href="https://doi.org/10.1098/rspa.2019.0378">El-Hachem et al. (2019)</a>.</p><p>Let us now give a further study of the relationship between <span>$c$</span> and <span>$\kappa$</span>. We start by reproducing Figure 5 in <a href="https://doi.org/10.1098/rspa.2019.0378">El-Hachem et al. (2019)</a>. </p><pre><code class="language-julia hljs">function compute_wave_speed(κ, α, β, T)
+    prob, x, u, t, L, su, sL, sx, mL, sol = solve_problem(κ, α, β, T, 2_000)
+    if sL &gt; 200.0 # the steady state solution makes no sense in this case, so we have a travelling wave
+        c = estimate_wave_speed(sol)
+        return c
+    else
+        return NaN
+    end
+end</code></pre><p>Now we can reproduce the figure.</p><pre><code class="language-julia hljs">κ = LinRange(0.1, 2.0, 50)
+c = compute_wave_speed.(κ, 0.5, 1.0, 5.0)
+fig = Figure(fontsize=33)
+ax = Axis(fig[1, 1], xlabel=L&quot;\kappa&quot;, ylabel=L&quot;c&quot;, width=600, height=300)
+lines!(ax, κ, c, linewidth=3, color=:red)
+resize_to_layout!(fig)
+xlims!(ax, 0, 2)
+ylims!(ax, 0, 1/2)</code></pre><figure>
+    <img src='../figures/fisher_stefan_2.png', alt'c-k plot'><br>
+</figure><p>We see that there is a cutoff value of <span>$\kappa$</span> called <span>$\kappa_c$</span>, such that the population goes extinct for <span>$\kappa &lt; \kappa_c$</span> and evolves to a travelling wave for <span>$\kappa &gt; \kappa_c$</span>. We can estimate this <span>$\kappa_c$</span>:</p><pre><code class="language-julia-repl hljs">julia&gt; κc = κ[findfirst(!isnan, c)]
+0.48775510204081635</code></pre><p>So, <span>$\kappa_c \approx 0.48$</span>, which agrees with the value in <a href="https://doi.org/10.1098/rspa.2019.0378">El-Hachem et al. (2019)</a>. </p><p>We could go further and explore the crtiical length, verifying the results of <a href="http://dx.doi.org/doi:10.1137/090771089">Du and Lin (2010)</a> and <a href="https://doi.org/10.1098/rspa.2019.0378">El-Hachem et al. (2019)</a> to check that:</p><ol><li>If <span>$L(t) &gt; \pi/2 - \kappa\int_0^{L(t)} u(x, t)\,\mathrm dx$</span> for at least one value of <span>$t &gt; 0$</span>, the solution evolves to a travelling wave.</li><li>If <span>$L(0) &lt; \pi/2$</span>, the population goes extinct and <span>$L(0) &lt; \lim_{t \to \infty} L(t) &lt; \pi/2$</span>.</li></ol><p>We do not do this here, though.</p><h2 id="Example-IV:-Epithelial-dynamics"><a class="docs-heading-anchor" href="#Example-IV:-Epithelial-dynamics">Example IV: Epithelial dynamics</a><a id="Example-IV:-Epithelial-dynamics-1"></a><a class="docs-heading-anchor-permalink" href="#Example-IV:-Epithelial-dynamics" title="Permalink"></a></h2><p>We now consider a free boundary model of epithelial dynamics, following <a href="https://doi.org/10.1016/j.jtbi.2018.12.025">Baker et al. (2019)</a> - refer to this paper for more detail about this problem. </p><p>The PDE we take is</p><p class="math-container">\[\begin{align*}
+\begin{array}{rcll}
+\dfrac{\partial q}{\partial t} &amp; = &amp; \dfrac{\partial}{\partial x}\left(D(q)\dfrac{\partial q}{\partial x}\right) + qG\left(\dfrac{1}{q}\right) &amp; 0 &lt; x &lt; L(t),\,t&gt;0,\\[9pt]
+\dfrac{\partial q}{\partial x} &amp; = &amp; 0 &amp; x = 0,\,t&gt;0,\\[9pt]
+\dfrac{1}{\eta}F\left(\dfrac{1}{q}\right) + \dfrac{D(q)}{2q}\dfrac{\partial q}{\partial x} &amp; = &amp; 0 &amp; x = L(t),\,t&gt;0,\\[9pt] 
+\dfrac{\mathrm dL}{\mathrm dt} &amp; = &amp; -\dfrac{D(q)}{q}\dfrac{\partial q}{\partial x} &amp; x = L(t),\,t&gt;0, \\[9pt]
+q(x, 0) &amp; = &amp; q_0(x) &amp; 0 \leq x \leq L(0).
+\end{array}
+\end{align*}\]</p><p>For the parameters of this problem, we take (these parameters follow a similar example in <a href="https://doi.org/10.1007/s11538-020-00807-x">Murphy et al. (2020)</a>):</p><ol><li><em>Linear force law</em>: <span>$F(q) = k(s-q)$</span> </li><li><em>Diffusion function</em>: <span>$D(q) = k/(\eta q^2)$</span>;</li><li><em>Proliferation law</em>: <span>$G(q) = \beta$</span>;</li><li><em>Spring constant</em>: <span>$k = 10$</span>;</li><li><em>Resting spring length</em>: <span>$s = 1$</span>;</li><li><em>Viscosity coefficient</em>: <span>$\eta = 1$</span>;</li><li><em>Intrinsic proliferation rate</em>: <span>$\beta = 0.00577$</span>. (This value is chosen so that <span>$\int_0^{400} q(x, 400)\,\mathrm dx \approx 400$</span>.)</li></ol><p>To define <span>$q_0(x)$</span>, we take a Gaussian initial density with variance three centred at <span>$x = L_0/2$</span>, where <span>$L_0 = 10$</span>, and we then scale it such that <span>$N(0) = 40$</span>, where <span>$N(t) = \int_0^{L(t)} q(x, t)\,\mathrm dx$</span> is the number of cells at the time <span>$t$</span>. To find this <span>$q_0(x)$</span>, write</p><p class="math-container">\[q_0(x) = \dfrac{A}{\sqrt{2\pi \sigma^2}}\exp\left\{-\dfrac{1}{2}\left(\dfrac{x - L_0/2}{\sigma}\right)^2\right\},\]</p><p>where <span>$\sigma^2 = 3$</span>. Integrating this, we find that </p><p class="math-container">\[\int_0^{L_0} q_0(x)\,\mathrm dx = A\text{erf}\left(\dfrac{L_0}{4\sigma}\sqrt{2}\right).\]</p><p>So, setting <span>$N(0) = A\text{erf}(L_0\sqrt{2}/4\sigma)$</span>, we find</p><p class="math-container">\[q_0(x) = \dfrac{N(0)}{\text{erf}\left(\dfrac{L_0}{4\sigma}\sqrt{2}\right)\sqrt{2\pi\sigma^2}}\exp\left\{-\dfrac{\left(2x - L_0\right)^2}{8\sigma^2}\right\}.\]</p><p>The last thing to do before we define our problem is to rearrange the boundary condition at <span>$x = L(t)$</span> into the form <span>$\partial q/\partial x = a_2(q(L(t), t), t)$</span>:</p><p class="math-container">\[\dfrac{\partial q(L(t), t)}{\partial x} = -\dfrac{2q}{\eta D(q)}F\left(\dfrac{1}{q}\right).\]</p><p>Let&#39;s now construct and solve the problem.</p><pre><code class="language-julia hljs">using MovingBoundaryProblems1D, SpecialFunctions 
+
+## Define the parameters 
+k, s, η, β = 10.0, 1.0, 1.0, 0.00577
+F = (q, p) -&gt; p.k * (p.s - q)
+D = (q, p) -&gt; p.k / (p.η * q^2)
+G = (q, p) -&gt; p.β
+L₀ = 10.0
+N₀ = 40.0
+σ = sqrt(3)
+
+## Define the initial condition 
+mesh_points = LinRange(0, L₀, 1000)
+q₀ = x -&gt; N₀ * exp(-(2x - L₀)^2 / (8σ^2)) / (erf(L₀ * sqrt(2) / (4σ)) * sqrt(2π * σ^2))
+initial_condition = q₀.(mesh_points)
+
+## Define the PDE 
+diffusion_function = (q, x, t, p) -&gt; p.D(q, p)
+diffusion_parameters = (D=D, k=k, η=η)
+reaction_function = (q, x, t, p) -&gt; q * p.G(inv(q), p)
+reaction_parameters = (G=G, β=β)
+
+## Define the boundary conditions 
+lhs = Neumann(0.0)
+rhs_f = (q, t, p) -&gt; -2q * p.F(inv(q), p) / (p.η * p.D(q, p))
+rhs_p = (F=F, η=η, D=D, s=s, k=k)
+rhs = Neumann(rhs_f, rhs_p)
+moving_boundary_f = (q, t, p) -&gt; (zero(q), -p.D(q, p) / q)
+moving_boundary_p = (D=D, k=k, η=η)
+moving_boundary = Robin(moving_boundary_f, moving_boundary_p)
+
+## Define the problem 
+prob = MBProblem(mesh_points, lhs, rhs, moving_boundary;
+    diffusion_function,
+    diffusion_parameters,
+    reaction_function,
+    reaction_parameters,
+    initial_condition,
+    initial_endpoint=L₀,
+    final_time=400.0)
+
+## Solve the problem 
+using OrdinaryDiffEq, LinearSolve
+sol = solve(prob, TRBDF2(linsolve=KLUFactorization()))</code></pre><p>To visualise the solution, we will also look at the cell number <span>$N(t)$</span>. This cell number is computed using the following:</p><pre><code class="language-julia hljs">using DataInterpolations
+function integrate_solution(prob, sol)
+    N = zeros(length(sol))
+    x = prob.geometry.mesh_points
+    for i in eachindex(sol)
+        q = @views sol.u[i][begin:(end-1)]
+        L = sol.u[i][end]
+        interp = LinearInterpolation(q, x)
+        N[i] = DataInterpolations.integral(interp, 0.0, 1.0) * L # ∫₀ᴸ q(x) dx = L∫₀¹ q(ξ) dξ 
+    end
+    return N
+end
+Nt = integrate_solution(prob, sol)</code></pre><p>We now plot.</p><pre><code class="language-julia hljs">using CairoMakie 
+
+fig = Figure(fontsize=33)
+colors = (:red, :blue, :black, :magenta, :darkgreen)
+
+ax1 = Axis(fig[1, 1], xlabel=L&quot;x&quot;, ylabel=L&quot;q(x, t)&quot;,
+    title=L&quot;(a): $q(x, t)$&quot;, titlealign=:left,
+    width=600, height=300)
+ax2 = Axis(fig[1, 2], xlabel=L&quot;t&quot;, ylabel=L&quot;N(t)&quot;,
+    title=L&quot;(b): $N(t)$&quot;, titlealign=:left,
+    width=600, height=300)
+ax3 = Axis(fig[1, 3], xlabel=L&quot;t&quot;, ylabel=L&quot;L(t)&quot;,
+    title=L&quot;(c): $L(t)$&quot;, titlealign=:left,
+    width=600, height=300)
+
+t = [0.0, 100.0, 200.0, 300.0, 400.0]
+qL = sol.(t)
+q = [@views qL[begin:(end-1)] for qL in qL]
+L = [qL[end] for qL in qL]
+ξ_grid = prob.geometry.mesh_points
+[lines!(ax1, ξ_grid .* L[i], q[i], color=colors[i]) for i in eachindex(q)]
+lines!(ax2, sol.t, Nt, color=:black, linewidth=3)
+lines!(ax3, sol.t, @views(sol[end, :]), color=:black, linewidth=3)
+resize_to_layout!(fig)</code></pre><figure>
+    <img src='../figures/epithelial.png', alt'Solution to the epithelial problem'><br>
+</figure></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../math/">Mathematical Details »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Tuesday 5 December 2023 04:14">Tuesday 5 December 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
